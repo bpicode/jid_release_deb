@@ -29,7 +29,8 @@ build:
 
     - export GOOS=linux
     - export GOARCH=amd64
-    - go test
+    - go get ./...
+    - go test -race ./...
     - go build -o $GOPATH/src/github.com/simeji/jid/jid
     - ./gradlew buildDeb
 
