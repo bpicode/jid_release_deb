@@ -27,6 +27,9 @@ build:
     - pwd
     - git status
 
+    - cp $CI_PROJECT_DIR/build.gradle .
+    - cp -r $CI_PROJECT_DIR/gradle .
+
     - export GOOS=linux
     - export GOARCH=amd64
     - go get -t ./...
