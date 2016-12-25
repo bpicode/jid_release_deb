@@ -29,15 +29,17 @@ build:
 
     - export GOOS=linux
     - export GOARCH=amd64
-    - go get ./...
+    - go get -t ./...
     - go test -race ./...
-    - go build -o $GOPATH/src/github.com/simeji/jid/jid
+    - go install
+    - go build cmd/jid/jid.go
     - ./gradlew buildDeb
 
     - export GOOS=linux
     - export GOARCH=arm
     - export GOARM=6
-    - go build -o $GOPATH/src/github.com/simeji/jid/jid
+    - go install
+    - go build cmd/jid/jid.go
     - ./gradlew buildDeb
 
     - tree -h $GOPATH/src/github.com/simeji/jid/build/distributions/
