@@ -1,0 +1,58 @@
+apply plugin: 'nebula.ospackage'
+apply plugin: 'nebula.deb'
+
+group = 'jid'
+version = System.getenv("VERSION") ?: "0.0.1unknown"
+description = 'Json Incremental Digger. See https://github.com/simeji/jid for further details.'
+
+buildscript {
+
+    dependencies {
+        classpath 'com.netflix.nebula:gradle-ospackage-plugin:4.3.0'
+    }
+
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+    mavenCentral()
+}
+
+buildDeb {
+
+    os = LINUX
+    def goArch = System.getenv("GOARCH") ?: "amd64"
+    switch(goArch) {
+        case "amd64":
+            arch = "amd64"
+            break
+        case "arm":
+            arch = "armhf"
+            break
+        default:
+            arch = goArch
+            break
+    }
+    packager = "bpicode"
+    summary = 'Json Incremental Digger'
+    license = 'MIT'
+    url = "https://github.com/simeji/jid"
+    maintainer = packager
+    uploaders = packager
+    provides = [new com.netflix.gradle.plugins.packaging.Dependency("jid", "")]
+    packageGroup = "utils"
+
+    from("$System.env.GOPATH" + "/src/github.com/simeji/jid/jid") {
+        into '/usr/bin'
+    }
+}
+
