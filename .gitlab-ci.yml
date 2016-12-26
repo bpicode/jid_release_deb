@@ -1,3 +1,9 @@
+variables:
+  PROJ1: "simeji"
+  PROJ2: "jid"
+  VERSION: "0.6.3-3"
+  CHECKOUT: "0.6.3"
+
 before_script:
   - pwd
   - echo deb http://http.debian.net/debian jessie-backports main >> /etc/apt/sources.list
@@ -7,22 +13,20 @@ before_script:
   - tar -xf go1.7.4.linux-amd64.tar.gz
   - mv go /usr/local
 
+after_script:
+  - gpg --batch --delete-secret-and-public-keys --yes 0A56A1CE2DFCECA404A5C884E4598EE3D0E416CE
+
 build:
   script:
-    - export ORIGIN
-    
-    - mkdir -p ~/workspace/go/src/github.com/simeji
-    - cd ~/workspace/go/src/github.com/simeji
-    - git clone https://github.com/simeji/jid.git
+    - mkdir -p ~/workspace/go/src/github.com/$PROJ1
+    - cd ~/workspace/go/src/github.com/$PROJ1
+    - git clone https://github.com/$PROJ1/$PROJ2.git
     - cd ~
     - export GOPATH=$(pwd)/workspace/go
     - export GOROOT=/usr/local/go
     - export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
-    - export VERSION=0.6.3-2
-    - export CHECKOUT=0.6.3
-
-    - cd $GOPATH/src/github.com/simeji/jid
+    - cd $GOPATH/src/github.com/$PROJ1/$PROJ2
     - git checkout $CHECKOUT
     - pwd
     - git status
@@ -46,18 +50,17 @@ build:
     - go build cmd/jid/jid.go
     - ./gradlew buildDeb
 
-    - tree -h $GOPATH/src/github.com/simeji/jid/build/distributions/
-    - cd $GOPATH/src/github.com/simeji/jid/build/distributions
+    - tree -h $GOPATH/src/github.com/$PROJ1/$PROJ2/build/distributions/
+    - cd $GOPATH/src/github.com/$PROJ1/$PROJ2/build/distributions
 
     - echo "$DEB_SIGNING_KEY_PUBLIC" | gpg --import
     - echo "$DEB_SIGNING_KEY_PRIVATE" | gpg --import
     - dpkg-sig --sign origin -k D0E416CE --g "--no-tty --passphrase=$DEB_SIGNING_KEY_PASSWORD" *.deb
     - dpkg-sig --verify *.deb
-    - gpg --batch --delete-secret-and-public-keys --yes 0A56A1CE2DFCECA404A5C884E4598EE3D0E416CE
-    - AMD64DEB=$(ls jid_*_amd64.deb)
-    - ARMDEB=$(ls jid_*_armhf.deb)
-    - echo "Uploading $AMD64DEB to bintray"
-    - curl -f -T $AMD64DEB -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/jid_deb/jid/$VERSION/pool/main/m/jid/$AMD64DEB;deb_distribution=wheezy,jessie;deb_component=main;deb_architecture=amd64;publish=1"
-    - curl -f -T $ARMDEB -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/jid_deb/jid/$VERSION/pool/main/m/jid/$ARMDEB;deb_distribution=wheezy,jessie;deb_component=main;deb_architecture=armhf;publish=1"
-    - curl -f -X POST -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" -ubpicode:$BINTRAY_API_KEY https://api.bintray.com/calc_metadata/bpicode/jid_deb
 
+    - AMD64DEB=$(ls jid_*_amd64.deb)
+    - ARMHFDEB=$(ls jid_*_armhf.deb)
+    - echo "Uploading packages to bintray"
+    - curl -f -T $AMD64DEB -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/jid_deb/jid/$VERSION/pool/main/m/jid/$AMD64DEB;deb_distribution=wheezy,jessie;deb_component=main;deb_architecture=amd64;publish=1"
+    - curl -f -T $ARMHFDEB -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/jid_deb/jid/$VERSION/pool/main/m/jid/$ARMHFDEB;deb_distribution=wheezy,jessie;deb_component=main;deb_architecture=armhf;publish=1"
+    - curl -f -X POST -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" -ubpicode:$BINTRAY_API_KEY https://api.bintray.com/calc_metadata/bpicode/jid_deb
