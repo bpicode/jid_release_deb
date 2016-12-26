@@ -19,7 +19,7 @@ build:
     - export GOROOT=/usr/local/go
     - export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
-    - export VERSION=0.6.3-1
+    - export VERSION=0.6.3-2
     - export CHECKOUT=0.6.3
 
     - cd $GOPATH/src/github.com/simeji/jid
