@@ -1,7 +1,7 @@
 variables:
   PROJ1: "simeji"
   PROJ2: "jid"
-  VERSION: "0.7-1"
+  VERSION: "0.7.0-2"
   CHECKOUT: "0.7.0"
 
 before_script:
@@ -64,3 +64,4 @@ build:
     - curl -f -T $AMD64DEB -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/jid_deb/jid/$VERSION/pool/main/m/jid/$AMD64DEB;deb_distribution=wheezy,jessie;deb_component=main;deb_architecture=amd64;publish=1"
     - curl -f -T $ARMHFDEB -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/jid_deb/jid/$VERSION/pool/main/m/jid/$ARMHFDEB;deb_distribution=wheezy,jessie;deb_component=main;deb_architecture=armhf;publish=1"
     - curl -f -X POST -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" -ubpicode:$BINTRAY_API_KEY https://api.bintray.com/calc_metadata/bpicode/jid_deb
+
