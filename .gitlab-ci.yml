@@ -1,9 +1,9 @@
 variables:
   PROJ1: "simeji"
   PROJ2: "jid"
-  VERSION: "0.7.2-6"
+  VERSION: "0.7.2-7"
   CHECKOUT: "0.7.2"
-  GO_DIST: "go1.8.3.linux-amd64.tar.gz"
+  GO_DIST: "go1.9.1.linux-amd64.tar.gz"
 
 before_script:
   - pwd
